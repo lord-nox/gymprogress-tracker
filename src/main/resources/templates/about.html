@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About GymProgress Tracker</title>
+    <link rel="stylesheet" th:href="@{/css/about.css}">
+</head>
+<body>
+<!-- Navigatiebalk -->
+<header>
+    <nav class="navbar">
+        <div class="logo">
+            <a th:href="@{/}">GymTracker</a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" id="loginButton">Login</a></li>
+            <li>
+                <a href="#" id="dashboardLink"
+                   th:attr="data-authenticated=${#authorization.expression('isAuthenticated()')}">
+                    Dashboard
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+<main class="about-section">
+    <h1>About GymProgress Tracker</h1>
+    <p>This project is designed to help you track and improve your fitness journey.</p>
+    <ul>
+        <li><strong>Track Workouts:</strong> Log exercises, sets, reps, weights, and time.</li>
+        <li><strong>Body Measurements:</strong> Keep track of body measurements over time.</li>
+        <li><strong>Interactive Charts:</strong> View progress with dynamic graphs using Chart.js.</li>
+        <li><strong>Integration:</strong> Connect with APIs like Fitbit or Google Fit.</li>
+        <li><strong>Secure:</strong> Your data is safe with Spring Security.</li>
+    </ul>
+    <p>Built with <strong>Spring Boot</strong>, <strong>Thymeleaf</strong>, and <strong>PostgreSQL</strong>.</p>
+</main>
+
+</body>
+</html>

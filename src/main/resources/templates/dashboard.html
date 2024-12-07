@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Gym Progress Tracker</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+<!-- Navigatiebalk -->
+<header>
+    <nav class="navbar">
+        <div class="logo">
+            <a th:href="@{/}">GymTracker</a>
+        </div>
+        <ul class="nav-links">
+            <li><a th:href="@{/logout}">Logout</a></li>
+        </ul>
+    </nav>
+</header>
+
+<!-- Dashboardsectie -->
+<main class="dashboard-section">
+    <h1>Welcome, <span th:text="${#authentication.name}">User</span>!</h1>
+    <p>Track your progress, view statistics, and log new workouts below.</p>
+
+    <section class="dashboard-content">
+        <!-- Trainingslogs -->
+        <div class="workout-logs">
+            <div class="add-workout-form">
+                <h2>Add Workout</h2>
+                <form th:action="@{/workouts/add}" method="post">
+                    <input type="text" name="exercise" placeholder="Exercise" required>
+                    <input type="number" name="sets" placeholder="Sets" required min="1">
+                    <input type="number" name="reps" placeholder="Reps" required min="1">
+                    <input type="number" step="0.1" name="weight" placeholder="Weight (kg)">
+                    <button type="submit">Add Workout</button>
+                </form>
+            </div>
+            <h2>Your Workouts</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Exercise</th>
+                    <th>Sets</th>
+                    <th>Reps</th>
+                    <th>Weight</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="log : ${workoutLogs}">
+                    <td th:text="${log.date}"></td>
+                    <td th:text="${log.exercise}"></td>
+                    <td th:text="${log.sets}"></td>
+                    <td th:text="${log.reps}"></td>
+                    <td th:text="${log.weight}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Grafieken -->
+        <div class="charts">
+            <h2>Progress Overview</h2>
+            <canvas id="progressChart"></canvas>
+        </div>
+    </section>
+</main>
+
+<!-- JavaScript voor Chart.js -->
+<script th:src="@{/js/chart.js}"></script>
+<script>
+    const ctx = document.getElementById('progressChart').getContext('2d');
+    const progressChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [/* Data uit backend */],
+            datasets: [{
+                label: 'Weight Lifted Over Time',
+                data: [/* Data uit backend */],
+                borderColor: '#f0a500',
+                backgroundColor: 'rgba(240, 165, 0, 0.2)',
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'top' },
+                title: { display: true, text: 'Fitness Progress' }
+            }
+        }
+    });
+</script>
+</body>
+</html>

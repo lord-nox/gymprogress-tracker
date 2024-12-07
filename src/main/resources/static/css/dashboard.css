@@ -1,0 +1,119 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    overflow-x: hidden;
+}
+.add-workout-form {
+    background: #444;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    color: #fff;
+}
+
+.add-workout-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.add-workout-form input, .add-workout-form button {
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+}
+
+.add-workout-form button {
+    background: #f0a500;
+    color: #fff;
+    cursor: pointer;
+}
+
+.add-workout-form button:hover {
+    background: #e59500;
+}
+
+/* Navigatiebalk */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    z-index: 100;
+}
+
+.navbar .logo a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.navbar .nav-links li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    margin-right: 40px;
+}
+
+.navbar .nav-links li a:hover {
+    color: #f0a500;
+}
+
+/* Dashboard-sectie */
+.dashboard-section {
+    padding: 100px 20px;
+    background: #222;
+    color: #fff;
+    text-align: center;
+}
+
+.dashboard-content {
+    margin: 30px auto;
+    max-width: 1200px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Workout logs */
+.workout-logs {
+    background: #333;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.workout-logs h2 {
+    margin-bottom: 10px;
+}
+
+.workout-logs table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.workout-logs th, .workout-logs td {
+    padding: 10px;
+    border: 1px solid #444;
+}
+
+.workout-logs th {
+    background: #444;
+}
+
+.workout-logs td {
+    text-align: center;
+}
+
+/* Charts */
+.charts {
+    background: #333;
+    padding: 20px;
+    border-radius: 10px;
+}
