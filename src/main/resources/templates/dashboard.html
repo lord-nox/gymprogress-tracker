@@ -29,11 +29,19 @@
         <div class="workout-logs">
             <div class="add-workout-form">
                 <h2>Add Workout</h2>
-                <form th:action="@{/workouts/add}" method="post">
-                    <input type="text" name="exercise" placeholder="Exercise" required>
-                    <input type="number" name="sets" placeholder="Sets" required min="1">
-                    <input type="number" name="reps" placeholder="Reps" required min="1">
-                    <input type="number" step="0.1" name="weight" placeholder="Weight (kg)">
+                <form id="workoutForm">
+                    <label for="exercise">Exercise</label>
+                    <input type="text" id="exercise" name="exercise" placeholder="Exercise" required>
+
+                    <label for="sets">Sets</label>
+                    <input type="number" id="sets" name="sets" placeholder="Sets" required min="1">
+
+                    <label for="reps">Reps</label>
+                    <input type="number" id="reps" name="reps" placeholder="Reps" required min="1">
+
+                    <label for="weight">Weight (kg)</label>
+                    <input type="number" id="weight" step="0.1" name="weight" placeholder="Weight (kg)">
+
                     <button type="submit">Add Workout</button>
                 </form>
             </div>
@@ -48,9 +56,9 @@
                     <th>Weight</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody id="workoutList">
                 <tr th:each="log : ${workoutLogs}">
-                    <td th:text="${log.date}"></td>
+                    <td th:text="${log.dateTime}"></td>
                     <td th:text="${log.exercise}"></td>
                     <td th:text="${log.sets}"></td>
                     <td th:text="${log.reps}"></td>
@@ -70,27 +78,33 @@
 
 <!-- JavaScript voor Chart.js -->
 <script th:src="@{/js/chart.js}"></script>
+
+<!-- JavaScript voor AJAX-aanroep -->
 <script>
-    const ctx = document.getElementById('progressChart').getContext('2d');
-    const progressChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: [/* Data uit backend */],
-            datasets: [{
-                label: 'Weight Lifted Over Time',
-                data: [/* Data uit backend */],
-                borderColor: '#f0a500',
-                backgroundColor: 'rgba(240, 165, 0, 0.2)',
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { position: 'top' },
-                title: { display: true, text: 'Fitness Progress' }
-            }
-        }
+    document.getElementById("workoutForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Voorkom standaard formulier verzenden
+
+        // Verstuur via AJAX
+        fetch('/workouts/get')
+            .then(response => response.json())
+            .then(data => {
+                const workoutList = document.getElementById("workoutList");
+                workoutList.innerHTML = "";
+                data.forEach(log => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                <td>${log.dateTime}</td>
+                <td>${log.exercise}</td>
+                <td>${log.sets}</td>
+                <td>${log.reps}</td>
+                <td>${log.weight}</td>
+            `;
+                    workoutList.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Error:', error));
     });
 </script>
+
 </body>
 </html>

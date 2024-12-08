@@ -15,7 +15,6 @@ import java.util.List;
 public class DashboardController {
 
     private final UserRepository userRepository;
-
     private final WorkoutRepository workoutRepository;
 
     public DashboardController(UserRepository userRepository, WorkoutRepository workoutRepository) {
@@ -25,11 +24,20 @@ public class DashboardController {
 
     @GetMapping("/dashboard")
     public String dashboard(Authentication authentication, Model model) {
-        String username = authentication.getName();
-        User user = userRepository.findByUsername(username);
+        // Haal de ingelogde gebruikersnaam (email) op uit de authenticatie
+        String email = authentication.getName();
+
+        // Zoek de gebruiker op basis van email
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
+
+        // Haal alle workouts van de gebruiker op
         List<Workout> workouts = workoutRepository.findByUserId(user.getId());
 
+        // Voeg workouts toe aan het model
         model.addAttribute("workoutLogs", workouts);
-        return "dashboard"; // Verwijst naar dashboard.html
+
+        // Verwijs naar de dashboard-pagina (dashboard.html)
+        return "dashboard";
     }
 }
