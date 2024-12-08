@@ -29,7 +29,7 @@
         <div class="workout-logs">
             <div class="add-workout-form">
                 <h2>Add Workout</h2>
-                <form id="workoutForm">
+                <form id="workoutForm" th:action="@{/workouts/add}" method="post">
                     <label for="exercise">Exercise</label>
                     <input type="text" id="exercise" name="exercise" placeholder="Exercise" required>
 
@@ -58,7 +58,7 @@
                 </thead>
                 <tbody id="workoutList">
                 <tr th:each="log : ${workoutLogs}">
-                    <td th:text="${log.dateTime}"></td>
+                    <td th:text="${#dates.format(log.dateTime, 'dd-MM-yyyy HH:mm')}"></td>
                     <td th:text="${log.exercise}"></td>
                     <td th:text="${log.sets}"></td>
                     <td th:text="${log.reps}"></td>
@@ -73,6 +73,9 @@
             <h2>Progress Overview</h2>
             <canvas id="progressChart"></canvas>
         </div>
+
+        <!-- Foutmeldingen -->
+        <div id="errorDiv" style="color: red; margin-top: 10px;"></div>
     </section>
 </main>
 
@@ -84,25 +87,41 @@
     document.getElementById("workoutForm").addEventListener("submit", function(event) {
         event.preventDefault(); // Voorkom standaard formulier verzenden
 
-        // Verstuur via AJAX
-        fetch('/workouts/get')
-            .then(response => response.json())
+        // Verstuur formulierdata via AJAX
+        fetch('/workouts/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams(new FormData(event.target)) // Verzamel formulierdata
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to add workout.");
+                }
+                return response.json();
+            })
             .then(data => {
+                // Update workoutlijst na succesvolle POST-aanroep
                 const workoutList = document.getElementById("workoutList");
-                workoutList.innerHTML = "";
+                workoutList.innerHTML = ""; // Wis bestaande logs
                 data.forEach(log => {
                     const row = document.createElement("tr");
                     row.innerHTML = `
-                <td>${log.dateTime}</td>
-                <td>${log.exercise}</td>
-                <td>${log.sets}</td>
-                <td>${log.reps}</td>
-                <td>${log.weight}</td>
-            `;
+                    <td>${new Date(log.dateTime).toLocaleString('en-GB')}</td>
+                    <td>${log.exercise}</td>
+                    <td>${log.sets}</td>
+                    <td>${log.reps}</td>
+                    <td>${log.weight}</td>
+                `;
                     workoutList.appendChild(row);
                 });
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {
+                console.error('Error:', error);
+                const errorDiv = document.getElementById("errorDiv");
+                errorDiv.textContent = "An error occurred while adding the workout. Please try again.";
+            });
     });
 </script>
 

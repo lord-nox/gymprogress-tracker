@@ -34,8 +34,14 @@ public class WorkoutController {
                              @RequestParam int reps,
                              @RequestParam(required = false) Double weight,
                              Model model) {
+        // Log de binnenkomende request-data
+        System.out.println("Received request data: " + exercise + ", " + sets + " sets, " + reps + " reps, " + (weight != null ? weight + "kg" : "no weight"));
+
         User user = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // Log de gevonden gebruiker
+        System.out.println("Found user: " + user.getEmail());
 
         Workout workout = new Workout();
         workout.setUser(user);
@@ -45,12 +51,16 @@ public class WorkoutController {
         workout.setWeight(weight);
         workout.setDateTime(LocalDateTime.now());
 
+        // Log de workout die wordt opgeslagen
+        System.out.println("Saving workout: " + workout);
+
         workoutRepository.save(workout);
 
-        // Voeg de nieuwe workout toe aan het model voor de dashboardpagina
+        // Log succesvolle opslag
+        System.out.println("Workout saved successfully!");
+
         model.addAttribute("workoutLogs", workoutRepository.findByUserId(user.getId()));
 
-        // Retourneer naar de dashboardpagina zonder redirect
         return "dashboard";
     }
 
@@ -60,6 +70,7 @@ public class WorkoutController {
         User user = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
+        // Voeg workout logs toe aan het model
         model.addAttribute("workoutLogs", workoutRepository.findByUserId(user.getId()));
         return "dashboard";
     }
