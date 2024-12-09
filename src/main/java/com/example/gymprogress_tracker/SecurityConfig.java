@@ -19,9 +19,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/login", "/about", "/fragments/**", "/css/**", "/js/**", "/videos/**").permitAll() // Allow /about to be accessed without login
-                        .requestMatchers("/dashboard").authenticated() // Require authentication for dashboard
+                        .requestMatchers("/", "/login", "/about", "/fragments/**", "/css/**", "/js/**", "/videos/**").permitAll()
+                        .requestMatchers("/dashboard/**").authenticated() // Beschermt dashboard en alle subroutes
                 )
+
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/dashboard", true)
@@ -42,13 +43,13 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> {
-            if ("user".equals(username)) {
+            if ("user".equalsIgnoreCase(username)) { // Case-insensitive vergelijking
                 return User.withUsername("user")
                         .password(passwordEncoder().encode("password"))
                         .roles("USER")
                         .build();
             }
-            throw new UsernameNotFoundException("User not found");
+            throw new UsernameNotFoundException("Gebruiker niet gevonden: " + username);
         };
     }
 
